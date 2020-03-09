@@ -1,0 +1,26 @@
+{
+  "_comment": "Template used for testing issue 6710",
+  "variables": {
+    "source_ami": "ami-f63b1193",
+    "region": "us-east-2"
+  },
+  "builders": [
+    {
+      "type": "amazon-chroot",
+      "region": "{{user `region`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "ena_support": true,
+      "ami_name": "amazon-chroot-test-{{timestamp}}",
+      "nvme_device_path": "/dev/nvme1n1p",
+      "device_path": "/dev/sdf",
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "echo Test > /tmp/test.txt"
+      ]
+    }
+  ]
+}

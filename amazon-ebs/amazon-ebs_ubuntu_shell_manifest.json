@@ -1,0 +1,53 @@
+{
+    "_comment": "Template used for testing issue 8157", 
+    "variables": {
+        "region": "us-east-1",
+        "aws_access_key": "",
+        "aws_secret_key": ""
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "ami_name": "packer-example-{{ timestamp }}",
+            "region": "{{ user `region`}}",
+            "instance_type": "t2.micro",
+            "source_ami_filter": {
+                "filters": {
+                    "virtualization-type": "hvm",
+                    "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
+                    "root-device-type": "ebs"
+                },
+                "owners": [
+                    "099720109477"
+                ],
+                "most_recent": true
+            },
+            "ssh_username": "ubuntu",
+            "communicator": "ssh"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sudo apt-get update",
+                "sudo apt-get install -y cowsay",
+                "cowsay packer!!"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+          "type": "manifest",
+          "output": "manifest.json",
+          "strip_path": true,
+          "custom_data": {
+            "source_ami_name": "{{ build `SourceAMIName` }}"
+          }
+        }
+    ]
+  }
+  
+  

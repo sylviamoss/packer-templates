@@ -1,0 +1,73 @@
+{
+    "_comment" : "Template used for fixing 8359",
+    "variables": {
+        "aws_access_key": "",
+        "aws_secret_key": ""
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "us-east-1",
+            "source_ami_filter": {
+                "filters": {
+                    "virtualization-type": "hvm",
+                    "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
+                    "root-device-type": "ebs"
+                },
+                "owners": [
+                    "099720109477"
+                ],
+                "most_recent": true
+            },
+            "temporary_iam_instance_profile_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "route53:ListHostedZones",
+                            "route53:GetChange"
+                        ],
+                        "Resource": "*"
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "ssm:GetParameter*"
+                        ],
+                        "Resource": "*"
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "kms:Decrypt"
+                        ],
+                        "Resource": "*"
+                    }
+                ]
+            },
+            "ami_block_device_mappings": [
+                {
+                    "device_name": "/dev/sda1",
+                    "delete_on_termination": "true",
+                    "volume_size": 20,
+                    "volume_type": "standard"
+                }
+            ],
+            "instance_type": "t2.micro",
+            "ssh_username": "ubuntu",
+            "communicator": "ssh",
+            "ami_name": "packer-example-8359-{{timestamp}}",
+            "encrypt_boot": true,
+            "tags": {
+                "Team": "myteamtag",
+                "OS_Version": "Ubuntu",
+                "Release": "Latest",
+                "Base_AMI_Name": "packer-example-8359-1578924903",
+                "Extra": "latest"
+            }
+        }
+    ]
+}
