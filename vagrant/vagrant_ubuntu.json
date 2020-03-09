@@ -1,0 +1,13 @@
+{
+  "_comment": "Template used for testing 8818",
+  "builders": [
+    {
+      "communicator": "ssh",
+      "ssh_port": 22,
+      "source_path": "ubuntu/bionic64",
+      "provider": "virtualbox",
+      "add_force": true,
+      "type": "vagrant"
+    }
+  ]
+}

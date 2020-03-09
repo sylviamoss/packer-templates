@@ -1,0 +1,40 @@
+{
+	"_comment": "Template used for fixing 5094",
+	"variables": {
+		"guest_memory_mb": "2048",
+		"guest_cpu_num": "1"
+	},
+	"builders": [
+		{
+			"type": "virtualbox-iso",
+			"boot_command": [
+				"<tab> append<wait>",
+				" initrd=initrd.img<wait>",
+				" inst.<wait>",
+				" inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+			],
+			"boot_wait": "10s",
+			"disk_size": 100000,
+			"guest_os_type": "RedHat_64",
+			"http_directory": "http",
+			"iso_url": "http://mirrors.mit.edu/centos/8/isos/x86_64/CentOS-8-x86_64-1905-boot.iso",
+			"iso_checksum": "a7993a0d4b7fef2433e0d4f53530b63c715d3aadbe91f152ee5c3621139a2cbc",
+			"iso_checksum_type": "sha256",
+			"ssh_username": "packer",
+			"ssh_password": "packer",
+			"ssh_port": 22,
+			"ssh_wait_timeout": "30m",
+			"output_directory": "/tmp",
+			"format": "ova",
+			"vm_name": "myVM",
+			"shutdown_command": "sudo -S shutdown -P now",
+			"vboxmanage": [
+				[ "modifyvm", "{{.Name}}", "--memory", "{{user `guest_memory_mb`}}" ],
+				[ "modifyvm", "{{.Name}}", "--cpus", "{{user `guest_cpu_num`}}" ],
+				[ "modifyvm", "{{.Name}}", "--audio", "none" ]
+			],
+			"vrdp_bind_address": "0.0.0.0"
+		}
+	]
+
+}
